@@ -1,1 +1,1 @@
-# GEOS_IT_mass_fluxes
+# GEOS_IT_cubed_sphere
