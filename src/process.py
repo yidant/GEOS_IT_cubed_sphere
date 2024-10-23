@@ -11,19 +11,27 @@ class Collection:
         self.time_frequency = time_frequency
         self.time_offset = time_offset
 
-    def concatenate_daily_files(self, datasets, date, output_dir):
+    def concatenate_daily_files(self, datasets, date, output_dir, attr_func=None):
         """
         Concatenate multiple hourly files into a single daily file.
         """
         try:
             combined = xr.concat(datasets, dim="time")
+
+            # Sort variables alphabetically
+            sorted_variables = sorted(combined.data_vars)
+            combined = combined[sorted_variables]
             
             # Create the output file path
-            daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.nc4"
+            # daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.C180.nc"
+            daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.nc"
             daily_file_path = os.path.join(output_dir, daily_filename)
 
             # Change attributes
-            # change_attrs(combined, daily_filename)
+            if attr_func:
+                attr_func(combined, daily_filename)
+            else:
+                change_attrs(combined, daily_filename, self.processed_collection)
 
             combined.to_netcdf(daily_file_path)
             
@@ -46,6 +54,7 @@ class Collection:
         
         while current_time < end_time:
             time_str = current_time.strftime('%Y-%m-%dT%H%M')
+            temp_datasets = []
             
             for collection_name, variables in variable_map.items():
             
@@ -62,13 +71,20 @@ class Collection:
                     if compute_func:
                         selected_vars = compute_func(selected_vars)
 
-                    datasets.append(selected_vars)
+                    temp_datasets.append(selected_vars)
+                    # print(self.processed_collection, collection_name, variables, time_str)
                 else:
                     print(f"File {file_path} does not exist.")
             
+            if temp_datasets:
+                # Merge the datasets for this current time step
+                merged_dataset = xr.merge(temp_datasets)
+                datasets.append(merged_dataset)
+
             current_time += self.time_frequency
         
         if datasets:
             return self.concatenate_daily_files(datasets, date, output_dir)
+        
 
 

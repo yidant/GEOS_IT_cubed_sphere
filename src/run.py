@@ -2,7 +2,11 @@ import sys
 import os
 import xarray as xr
 from datetime import datetime, timedelta, time
-from variables import A1, A3cld, A3mstC, A3mstE, A3dyn, I3
+from variables import A1, A3cld, A3mstC, A3mstE, A3dyn, I3, CTM_A1, CTM_I1, CN
+import warnings
+
+# Ignore specific xarray UserWarning about duplicate dimension names
+warnings.filterwarnings("ignore", category=UserWarning, message=".*Duplicate dimension names present.*")
 
 def main():
     if len(sys.argv) != 2:
@@ -35,6 +39,11 @@ def main():
     A3mstE(date_to_process, raw_data_dir, output_dir)
     A3dyn(date_to_process, raw_data_dir, output_dir)
     I3(date_to_process, raw_data_dir, output_dir)
+    
+    # CTM_A1(date_to_process, raw_data_dir, output_dir)
+    # CTM_I1(date_to_process, raw_data_dir, output_dir)
+
+    # CN(raw_data_dir, output_dir)
 
 if __name__ == "__main__":
     main()
