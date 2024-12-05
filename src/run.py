@@ -23,7 +23,8 @@ def main():
     
     # Define directories
     raw_data_dir = f"/storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/GEOS_C180/GEOS_IT_Raw/{YYYY}/{MM}/{DD}"
-    output_dir = f"/storage1/fs1/rvmartin/Active/t.yidan/geos_it_cubed_sphere/scratch/GEOS_IT/{YYYY}/{MM}"
+    # output_dir = f"/storage1/fs1/rvmartin/Active/t.yidan/geos_it_cubed_sphere/scratch/GEOS_IT/{YYYY}/{MM}"
+    output_dir = f"/storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExternalShare/GEOS_C180/GEOS_IT/{YYYY}/{MM}"
     
     if not os.path.exists(raw_data_dir):
         print("Invalid Raw Data Directory!")
@@ -40,8 +41,8 @@ def main():
     A3dyn(date_to_process, raw_data_dir, output_dir)
     I3(date_to_process, raw_data_dir, output_dir)
     
-    # CTM_A1(date_to_process, raw_data_dir, output_dir)
-    # CTM_I1(date_to_process, raw_data_dir, output_dir)
+    CTM_A1(date_to_process, raw_data_dir, output_dir)
+    CTM_I1(date_to_process, raw_data_dir, output_dir)
 
     # CN(raw_data_dir, output_dir)
 

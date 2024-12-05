@@ -22,9 +22,14 @@ class Collection:
             sorted_variables = sorted(combined.data_vars)
             combined = combined[sorted_variables]
             
+            # Reverse the 'lev' dimension to make it vertical up
+            if 'lev' in combined.dims:
+                reversed_data = combined.isel(lev=slice(None, None, -1))
+                combined = reversed_data.assign_coords(lev=combined.lev)
+
             # Create the output file path
-            # daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.C180.nc"
-            daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.nc"
+            daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.C180.nc"
+            # daily_filename = f"GEOSIT.{date.strftime('%Y%m%d')}.{self.processed_collection}.nc"
             daily_file_path = os.path.join(output_dir, daily_filename)
 
             # Change attributes

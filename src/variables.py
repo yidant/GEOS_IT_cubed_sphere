@@ -38,6 +38,16 @@ def A1(date_to_process, raw_data_dir, output_dir):
             ds['SEAICE70'] = xr.where((ds['FRSEAICE'] >= 0.7) & (ds['FRSEAICE'] < 0.8), 1, 0)
             ds['SEAICE80'] = xr.where((ds['FRSEAICE'] >= 0.8) & (ds['FRSEAICE'] < 0.9), 1, 0)
             ds['SEAICE90'] = xr.where(ds['FRSEAICE'] >= 0.9, 1, 0)
+
+        # Scale 'SLP' and 'TROPPT' by 0.01
+        if 'SLP' in ds:
+            ds['SLP'] = ds['SLP'] * 0.01
+            ds['SLP'].attrs['units'] = 'hPa'
+
+        if 'TROPPT' in ds:
+            ds['TROPPT'] = ds['TROPPT'] * 0.01
+            ds['TROPPT'].attrs['units'] = 'hPa'
+
         return ds
 
     collection_A1.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir, A1_compute)
@@ -112,13 +122,22 @@ def I3(date_to_process, raw_data_dir, output_dir):
     variable_map = {
         "asm_inst_3hr_glo_C180x180x6_v72": ["PS", "QV", "T"]
     }
-    collection_I3.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir)
+
+    def I3_compute(ds):
+        # Scale 'PS' by 0.01
+        if 'PS' in ds:
+            ds['PS'] = ds['PS'] * 0.01
+            ds['PS'].attrs['units'] = 'hPa'
+
+        return ds
+
+    collection_I3.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir, I3_compute)
 
 def CN(raw_data_dir, output_dir):
     collection_CN = Collection(
         "CN", 
         timedelta(hours=0),
-        time(hour=24, minute=0)
+        time(hour=12, minute=0)
     )
     variable_map = {
         "asm_const_0hr_glo_C180x180x6_slv": ["FRLAKE", "FRLAND", "FRLANDICE", "FROCEAN", "PHIS"]
@@ -147,7 +166,16 @@ def CTM_A1(date_to_process, raw_data_dir, output_dir):
     variable_map = {
         "ctm_tavg_1hr_glo_C180x180x6_v72": ["CX", "CY", "DELP", "MFXC", "MFYC", "PS"]
     }
-    collection_CTM_A1.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir)
+
+    def CTM_A1_compute(ds):
+        # Scale 'PS' by 0.01
+        if 'PS' in ds:
+            ds['PS'] = ds['PS'] * 0.01
+            ds['PS'].attrs['units'] = 'hPa'
+
+        return ds
+
+    collection_CTM_A1.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir, CTM_A1_compute)
 
 def CTM_I1(date_to_process, raw_data_dir, output_dir):
     collection_CTM_I1 = Collection(
@@ -158,4 +186,13 @@ def CTM_I1(date_to_process, raw_data_dir, output_dir):
     variable_map = {
         "ctm_inst_1hr_glo_C180x180x6_v72": ["PS", "QV"]
     }
-    collection_CTM_I1.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir)
+
+    def CTM_I1_compute(ds):
+        # Scale 'PS' by 0.01
+        if 'PS' in ds:
+            ds['PS'] = ds['PS'] * 0.01
+            ds['PS'].attrs['units'] = 'hPa'
+
+        return ds
+
+    collection_CTM_I1.process_files_for_date(raw_data_dir, variable_map, date_to_process, output_dir, CTM_I1_compute)
